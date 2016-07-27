@@ -24,7 +24,7 @@ This says that, for any list `some_list`, passing it through
 But what list do we actually pass in? The simple answer is "lots of
 them." In this particular case, we'll generate a hundred lists. These
 will vary in length, and vary in content, but we guarantee to include
-t least one empty list and one list containing one element (as these
+at least one empty list and one list containing a single element (as these
 are both common boundary cases that can break code). The overall test
 passes if the assertion is contains is try for all these lists.
 
@@ -55,21 +55,20 @@ For a different approach, see
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
-  1. Add `pbt` to your list of dependencies in `mix.exs`:
+## Copyright and License
 
-    ```elixir
-    def deps do
-      [{:pbt, "~> 0.1.0"}]
-    end
-    ```
+Copyright © 2016 Dave Thomas <dave@pragdave.me>
 
-  2. Ensure `pbt` is started before your application:
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-    ```elixir
-    def application do
-      [applications: [:pbt]]
-    end
-    ```
+> http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 

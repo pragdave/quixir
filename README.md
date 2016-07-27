@@ -44,7 +44,7 @@ of all good design. Most likely you use them every day, but they're
 often implicit in what you do. Property-based testing surfaces these
 invariants—they will drive (and improve) the design of your code.
 
-'nuf hype. Here are the details. But first…
+’nuf hype. Here are the details. But first…
 
 
 ### Alternatives
@@ -60,14 +60,14 @@ For a different approach, see
 
 Copyright © 2016 Dave Thomas <dave@pragdave.me>
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 (the “License”);
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
 > http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
+distributed under the License is distributed on an _AS IS+ BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.

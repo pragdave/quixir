@@ -46,7 +46,6 @@ invariants—they will drive (and improve) the design of your code.
 
 ’nuf hype. Here are the details. But first…
 
-
 ### Alternatives
 
 For a different approach, see
@@ -54,6 +53,135 @@ For a different approach, see
 [triq](https://github.com/krestenkrab/triq).
 
 ## Installation
+
+~~~ elixir
+def deps do
+  [
+    ...
+    { :quixir, "~> 0.1", only: :test },
+    ...
+  ]
+end
+~~~
+
+## Including in Tests
+
+Quixir tests run inside regular ExUnit tests, and can take advantage
+of all the ExUnit features, including tagging, setup, and `describe`
+blocks.
+
+Here's a full test file:
+
+~~~ elixir
+defmodule TestReverse do
+  use ExUnit.Case
+  use Quixir
+
+  test "a reversed list has the same length as the original" do
+    props original: list do
+      reversed = reverse(original)
+      assert length(reversed) == length(original)
+    end
+  end
+
+  test "reversing a list twice returns the original" do
+    props original: list do
+      new_list = original |> reverse |> reverse
+      assert new_list == original
+    end
+  end
+
+  test "reversing a list of length 1 does nothing" do
+    props original: list(length: 1) do
+      assert reverse(original) == original
+    end
+  end
+
+  test "reversing a list of length 2 swaps the elements" do
+    props original: list(length: 2) do
+      [ b, a ] = reverse(original)
+      assert [ a, b ] == original
+    end
+  end
+
+  test "reversing a list of length 3 swaps the extremes" do
+    props original: list(length: 3) do
+      [ c, b, a ] = reverse(original)
+      assert [ a, b, c ] == original
+    end
+  end
+end
+~~~
+
+## Anatomy of a Property Test
+
+The general form of a property test is
+
+~~~ elixir
+props [name1: type, name2: type, …], [option,…] do
+  # code including assertions
+  # this code can reference the values in name1 and name2
+end
+~~~
+
+As the `options` are generally omitted, this simplifies to
+
+~~~ elixir
+props name1: type, name2: type, …  do
+  # code including assertions
+end
+~~~
+
+### Options
+
+: `repeat_for:` _n_
+Number of times to run the block, using different values each time.
+Defaults to 100.
+
+: `trace: true`
+Dumps the values used in each iteration of the block.
+
+For example:
+
+~~~ elixir
+props [ a: int, b: int ], trace: true, repeat_for: 50 do
+  assert a + b == b + a
+end
+~~~
+
+## Type Specifications
+
+A type specification is the name of a Quixir type generator,
+optionally followed by a keyword list of constraints.
+
+* `int`
+* `int(min: 20, max: 50)`
+* `int(must_have: [ 0, 10, 100 ])`
+
+There's a full list of these generators, their constraints, and their
+defaults below.
+
+Sometimes type specifications can be nested. For example, this
+specifies (possibly empty) lists of positive integers.
+
+* `list(of: int(min: 1))`
+
+### Back references to values
+
+Occasionally you want to make the constraints of one type depend on
+the value generated for a prior type. You do this using the pin
+operator, `^`. For example, the following generates sets of two
+integers where the second is guaranteed to be greater the first:
+
+~~~ elixir
+props a: int, b: int(min: ^a + 1) do
+  assert a < b
+end
+~~~
+
+## List of Type Generators
+
+. . .
 
 
 ## Copyright and License
@@ -67,7 +195,7 @@ You may obtain a copy of the License at
 > http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an _AS IS+ BASIS,
+distributed under the License is distributed on an _AS IS_ BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.

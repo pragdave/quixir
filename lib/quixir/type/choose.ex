@@ -26,7 +26,7 @@ defmodule Quixir.Type.Choose do
   """
   def next_value(type, locals) do
     list  = type.generator_constraints.list
-    index = :random.uniform(length(list)) - 1
+    index = :rand.uniform(length(list)) - 1
 
     case Enum.at(list, index) do
       nested_type = %{ generator: _ } ->

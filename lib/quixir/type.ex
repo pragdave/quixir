@@ -13,10 +13,7 @@ defmodule Quixir.Type do
   #   end)
   # end
 
-  alias Quixir.Type.Any
-  alias Quixir.Type.Int
-  alias Quixir.Type.List
-
+  alias Quixir.Type.{Any, Float, Int, List}
 
   defstruct type: nil, parameters: nil, must_have: nil, generator: nil, state: nil
 
@@ -29,11 +26,79 @@ defmodule Quixir.Type do
   end
 
 
-  def any(),         do: Any.create()
+  #######
+  # any #
+  #######
 
-  def int(),         do: Int.create()
-  def int(max),      do: Int.create(max)
-  def int(min, max), do: Int.create(min, max)
+  def any(), do: Any.create()
+
+  #######
+  # int #
+  #######
+
+  def int() do
+    Int.create([])
+  end
+
+  def int(min, max) when is_integer(min) and is_integer(max) do
+    Int.create(min: min, max: max)
+  end
+
+  def int(max) when is_integer(max) do
+    Int.create(min: 1, max: max)
+  end
+
+  def int(options) when is_list(options) do
+    Int.create(options)
+  end
+
+  def positive_int do
+    Int.create(min: 1)
+  end
+
+  def negative_int do
+    Int.create(max: -1)
+  end
+
+  def nonnegative_int do
+    Int.create(min: 0)
+  end
+
+  #######
+  # float #
+  #######
+
+  def float() do
+    Float.create([])
+  end
+
+  def float(min, max) when is_number(min) and is_number(max) do
+    Float.create(min: min, max: max)
+  end
+
+  def float(max) when is_number(max) do
+    Float.create(min: 1, max: max)
+  end
+
+  def float(options) when is_list(options) do
+    Float.create(options)
+  end
+
+  def positive_float do
+    Float.create(min: Float.epsilon)
+  end
+
+  def negative_float do
+    Float.create(max: -Float.epsilon)
+  end
+
+  def nonnegative_float do
+    Float.create(min: 0.0)
+  end
+
+  ########
+  # list #
+  ########
 
   def list(),                       do: List.create()
   def list(max_length),             do: List.create(max_length)
@@ -76,4 +141,14 @@ defmodule Quixir.Type do
   def add_to_params(params, keys, value), do: put_in(params, keys, value)
 
 
+  def trim_must_have_to_range(params, _options) do
+    min = params.generator_constraints.min
+    max = params.generator_constraints.max
+    updated_must_have =
+      params.must_have
+      |> Enum.filter(fn val -> val >= min && val <= max end)
+    put_in(params, [:must_have], updated_must_have)
+  end
+
+  
 end

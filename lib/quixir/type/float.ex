@@ -1,17 +1,28 @@
-defmodule Quixir.Type.Int do
+defmodule Quixir.Type.Float do
 
   alias Quixir.Distribution
   alias Quixir.Type
 
+  defmodule Limits do
+    def min(), do: min(1.0, 2.0, 2.0)
+
+    def min(current, current, last2),  do: last2
+    def min(current, last, _last2),    do: min(current/2.0, current, last)
+  end
+
+  @min Limits.min
+
+  def epsilon, do: @min
+
   @default_type_params %{
     type:       __MODULE__,
     generator:  Quixir.Generator.Int,
-    must_have:  [ 0, -1, 1 ],
+    must_have:  [ 0.0, -1.0, 1.0, @min, -@min ],
     state:      0,
     generator_constraints: %{
       distribution: Distribution.HyperNormal,
-      min:      -1_000,
-      max:       1_000,
+      min:      -1.0e6,
+      max:       1.0e6,
     },
   }
 
@@ -48,7 +59,7 @@ defmodule Quixir.Type.Int do
 
       _ ->
         val = with c = type.generator_constraints,
-                do: :rand.uniform(c.max - c.min + 1) - 1 + c.min
+                do: :rand.uniform() * (c.max - c.min) + c.min
         {val, type}
     end
   end

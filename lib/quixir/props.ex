@@ -38,7 +38,8 @@ defmodule Quixir.Props do
 
   defp _props(property_list, options, do: block) do
 
-    try_count  = (options[:try] || 5)
+    try_count  = (options[:repeat_for] || 100)
+
     body = quote do
       q_state = unquote(create_generator_state(property_list))
       Enum.reduce(1..unquote(try_count), q_state, fn (_i, q_state) ->
@@ -112,8 +113,7 @@ defmodule Quixir.Props do
   #     props a: int, b: int(derived: [min: fn vals -> vals[:a] + 1 end])
   #
 
-
-  defp wrap_pinned_vars({ form, context, [ params | rest ]}) do
+  defp wrap_pinned_vars({ form, context, [ params | rest ]}) when is_list(params) do
     case Enum.reduce(params, {[], []}, &maybe_wrap/2) do
 
       { regular, [] } ->
@@ -125,10 +125,20 @@ defmodule Quixir.Props do
     end
   end
 
+  # this deals with cases like int(10) or int(^a)
+  defp wrap_pinned_vars({ form, context, [ param | rest ]}) do
+    new_param = if has_pins?(param) do
+      { form, context, replace_pinned_vars_with_function(param) }
+    else
+      param
+    end
+    { form, context, [ new_param | rest ]}
+  end
+
   # `normal` is list of params that are not wrapped, and `wrapped`
   # is those that are
   defp maybe_wrap({name, value}, {normal, wrapped}) do
-    if has_pins(value) do
+    if has_pins?(value) do
       wrapped_param = replace_pinned_vars_with_function(value)
       { normal, [ { name, wrapped_param } | wrapped ] }
     else
@@ -136,7 +146,7 @@ defmodule Quixir.Props do
     end
   end
 
-  defp has_pins(code) do
+  defp has_pins?(code) do
     Macro.prewalk(code, false, fn
       {:^, _, _}, _ -> { nil,  true }
       node, flag    -> { node, flag }

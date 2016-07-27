@@ -134,12 +134,14 @@ end
 
 ### Options
 
-: `repeat_for:` _n_
-Number of times to run the block, using different values each time.
-Defaults to 100.
+`repeat_for:` _n_
 
-: `trace: true`
-Dumps the values used in each iteration of the block.
+> Number of times to run the block, using different values each time.
+  Defaults to 100.
+
+`trace: true`
+
+> Dumps the values used in each iteration of the block.
 
 For example:
 

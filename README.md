@@ -161,7 +161,7 @@ optionally followed by a keyword list of constraints.
 * `int(must_have: [ 0, 10, 100 ])`
 
 There's a full list of these generators, their constraints, and their
-defaults below.
+defaults, [below](#list-of-type-generators).
 
 Sometimes type specifications can be nested. For example, this
 specifies (possibly empty) lists of positive integers.
@@ -182,6 +182,10 @@ end
 ~~~
 
 ## List of Type Generators
+
+. . .
+
+## Shrinking
 
 . . .
 

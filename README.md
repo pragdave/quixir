@@ -13,8 +13,8 @@ like this:
 
 ~~~ elixir
 props some_list: list do
-  rev = my_reverse(some_list)
-  assert rev == length(some_list)
+  reversed = my_reverse(some_list)
+  assert length(reversed) == length(some_list)
 end
 ~~~
 

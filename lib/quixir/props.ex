@@ -148,7 +148,7 @@ defmodule Quixir.Props do
     end
   end
 
-  def pin_subexpr({:^, meta, [{var, _, _}]},  acc) do
+  def pin_subexpr({:^, _meta, [{var, _, _}]},  acc) do
     { quote(do: q_locals[unquote(var)]), acc }
   end
   
@@ -169,7 +169,6 @@ defmodule Quixir.Props do
   end
 
   def set_one_param({name, _generator}) do
-    state_var = {name, [], nil}
     quote do
       {unquote({name, [], nil}), q_tmp} =
         Quixir.Type.next_value(q_state[unquote(name)], q_locals)

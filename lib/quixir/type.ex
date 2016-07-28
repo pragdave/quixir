@@ -15,7 +15,13 @@ defmodule Quixir.Type do
 
   alias Quixir.Type.{Any, Float, Int, List}
 
-  defstruct type: nil, parameters: nil, must_have: nil, generator: nil, state: nil
+
+  defstruct(
+    type:                  __MODULE__,
+    must_have:             [ ],
+    state:                 nil,
+    generator_constraints: %{ }
+  )
 
   def next_value(type, locals) do
     type.type.next_value(type, locals)
@@ -115,32 +121,41 @@ defmodule Quixir.Type do
 
   def add_derived_to_params(params, options) do
     params
-    |> add_to_params([:derived], options[:derived])
+    |> add_to_params(:derived, options[:derived])
   end
 
   def add_min_max_to_params(params, options) do
     params
-    |> add_to_params([:generator_constraints, :min], options[:min])
-    |> add_to_params([:generator_constraints, :max], options[:max])
+    |> add_to_constraints(:min, options[:min])
+    |> add_to_constraints(:max, options[:max])
   end
 
   def add_min_max_length_to_params(params, options) do
     params
-    |> add_to_params([:generator_constraints, :min_length], options[:min_length])
-    |> add_to_params([:generator_constraints, :max_length], options[:max_length])
+    |> add_to_constraints(:min_length, options[:min_length])
+    |> add_to_constraints(:max_length, options[:max_length])
   end
 
   def add_must_have_to_params(params, options) do
-    add_to_params(params, [:must_have], options[:must_have])
+    add_to_params(params, :must_have, options[:must_have])
   end
 
-  def add_element_type_to_params(params, options) do
-    add_to_params(params, [:element_type], options[:element_type])
+  def add_element_type_to_constraints(params, options) do
+    add_to_constraints(params, :element_type, options[:element_type])
   end
 
 
   def add_to_params(params, _keys, nil),  do: params
-  def add_to_params(params, keys, value), do: put_in(params, keys, value)
+  def add_to_params(params, key, value) when is_atom(key) do
+    Map.put(params, key, value)
+  end
+
+  def add_to_constraints(params, _key, nil), do: params
+  def add_to_constraints(params, key, value) when is_atom(key) do
+    constraints = params.generator_constraints
+    constraints = Map.put(constraints, key, value)
+    %{ params | generator_constraints: constraints }
+  end
 
 
   def trim_must_have_to_range(params, _options) do
@@ -149,7 +164,7 @@ defmodule Quixir.Type do
     updated_must_have =
       params.must_have
       |> Enum.filter(fn val -> val >= min && val <= max end)
-    put_in(params, [:must_have], updated_must_have)
+    Map.put(params, :must_have, updated_must_have)
   end
 
   

@@ -2,15 +2,14 @@ defmodule Quixir.Type.List do
 
   alias Quixir.Type
 
-  @default_type_params %{
+  @default_type_params %Type{
     type:         __MODULE__,
-    generator:    Quixir.Generator.List,
     must_have:    [],
-    element_type: Type.any(),
     state:        0,
     generator_constraints: %{
       min_length:  0,
       max_length:  100,
+      element_type: Type.any(),
     },
   }
 
@@ -45,7 +44,7 @@ defmodule Quixir.Type.List do
     @default_type_params
     |> Type.add_min_max_length_to_params(options)
     |> Type.add_must_have_to_params(options)
-    |> Type.add_element_type_to_params(options)
+    |> Type.add_element_type_to_constraints(options)
     |> maybe_add_empty_list_to_must_have(options)
   end
 
@@ -61,10 +60,10 @@ defmodule Quixir.Type.List do
   Otherwise return a random value according to the generator constraints.
   """
   def next_value(type, locals) do
-    case type[:must_have] do
+    case type.must_have do
   
       [ h | t ] ->
-        { h, put_in(type.must_have, t) }
+        { h, %Type{type | must_have: t} }
   
       _ ->
         populate_list(type, locals)
@@ -72,12 +71,10 @@ defmodule Quixir.Type.List do
   end
 
 
-  defp populate_list(type = %{ element_type: element_type,
-                               generator_constraints: c},
-                     locals)
+  defp populate_list(type = %Type{ generator_constraints: c}, locals)
   do
     len = choose_length(c.min_length, c.max_length)
-    list = element_type |> Type.as_stream(locals) |> Enum.take(len)
+    list = c.element_type |> Type.as_stream(locals) |> Enum.take(len)
     { list, type }
   end
 
@@ -88,10 +85,13 @@ defmodule Quixir.Type.List do
 
 
   defp maybe_add_empty_list_to_must_have(
-        params = %{ generator_constraints: %{ min_length: 0 }, must_have: []},
-        _options) do
-    put_in(params, [:must_have], [[]])
+        params = %{ generator_constraints: %{ min_length: 0 }, must_have: [] },
+        _options
+      )
+  do
+    Type.add_to_params(params, :must_have, [[]])
   end
+
   defp maybe_add_empty_list_to_must_have(params, _), do: params
 
 end

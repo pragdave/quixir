@@ -2,7 +2,6 @@ defmodule Types.ListTest do
 
   use ExUnit.Case
 
-  alias  Quixir.Generator
   alias  Quixir.Type
   import Type
   import Type.List
@@ -48,7 +47,6 @@ defmodule Types.ListTest do
     test "with a type argument" do
       with i = create(int) do
         assert i.type == Quixir.Type.List
-        assert %{ generator: Generator.Int}  = i.element_type
         assert [] in i.must_have
       end
     end

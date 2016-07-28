@@ -13,9 +13,8 @@ defmodule Quixir.Type.Float do
 
   def epsilon, do: @min
 
-  @default_type_params %{
+  @default_type_params %Type{
     type:       __MODULE__,
-    generator:  Quixir.Generator.Int,
     must_have:  [ 0.0, -1.0, 1.0, @min, -@min ],
     state:      0,
     generator_constraints: %{
@@ -29,12 +28,12 @@ defmodule Quixir.Type.Float do
   def create(options) when is_list(options) do
     options = Enum.into(options, %{})
 
-    params = @default_type_params
-             |> add_distribution_to_params(options)
-             |> Type.add_derived_to_params(options)
-             |> Type.add_min_max_to_params(options)
-             |> Type.add_must_have_to_params(options)
-             |> Type.trim_must_have_to_range(options)
+    @default_type_params
+    |> add_distribution_to_params(options)
+    |> Type.add_derived_to_params(options)
+    |> Type.add_min_max_to_params(options)
+    |> Type.add_must_have_to_params(options)
+    |> Type.trim_must_have_to_range(options)
   end
 
 
@@ -51,10 +50,10 @@ defmodule Quixir.Type.Float do
 
     type = update_with_derived_values(type, locals)
 
-    case type[:must_have] do
+    case type.must_have do
 
       [ h | t ] ->
-        { h, put_in(type.must_have, t) }
+        { h, %Type{type | must_have: t} }
 
       _ ->
         val = with c = type.generator_constraints,
@@ -84,7 +83,7 @@ defmodule Quixir.Type.Float do
   # to pick between them, otherwise use a strongly center weighted one
   defp add_distribution_to_params(params, options) do
     if options[:min] && options[:max] do
-      put_in(params.generator_constraints.distribution, Distribution.Uniform)
+      Type.add_to_constraints(params, :distribution, Distribution.Uniform)
     else
       params
     end

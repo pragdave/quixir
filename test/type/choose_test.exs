@@ -34,20 +34,21 @@ defmodule Types.ChooseTest do
         cond do
           val == :a ->
             Map.put(counts, :a, counts[:a]+1);
-
+      
           is_integer(val) ->
             assert val in 10..20
             Map.put(counts, :int, counts[:int]+1);
-
+      
           is_list(val) ->
            assert length(val) == 2
            Map.put(counts, :list, counts[:list]+1);
-
-          true ->
+      
+           true ->
+            IO.inspect counts
             flunk(inspect val)
         end
       end)
-
+      
       with likely_range = 20..45 do
         assert counts[:a]    in likely_range
         assert counts[:int]  in likely_range

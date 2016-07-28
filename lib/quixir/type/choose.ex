@@ -14,7 +14,7 @@ defmodule Quixir.Type.Choose do
 
 
   def create(list) when is_list(list) and length(list) > 0 do
-    put_in(@default_type_params, [:generator_constraints, :list], list)
+    Type.add_to_constraints(@default_type_params, :list, list)
   end
 
 
@@ -29,13 +29,13 @@ defmodule Quixir.Type.Choose do
     index = :rand.uniform(length(list)) - 1
 
     case Enum.at(list, index) do
-      nested_type = %{ generator: _ } ->
+      nested_type = %{__struct__: Quixir.Type} ->
         { val, updated_type } = Type.next_value(nested_type, locals)
         list = List.update_at(list, index, fn _ -> updated_type end)
-        { val, put_in(type, [:generator_constraints, :list], list) }
+        { val, Type.add_to_constraints(type, :list, list) }
 
       val ->
-        {val, type}
+        { val, type }
     end
   end
 end

@@ -1,4 +1,4 @@
-# Quixir: Pure Elixir Property-based Testing
+# Quixir: Pure Elixir Property-based Testing [![Build Status](https://travis-ci.org/pragdave/quixir.svg?branch=master)](https://travis-ci.org/pragdave/quixir)
 
 [Property-based
 testing](http://blog.jessitron.com/2013/04/property-based-testing-what-is-it.html)

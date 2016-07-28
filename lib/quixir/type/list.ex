@@ -80,7 +80,7 @@ defmodule Quixir.Type.List do
 
   defp choose_length(fixed, fixed), do: fixed
   defp choose_length(min, max) do
-    trunc((max - min)*:random.uniform()) + min
+    trunc((max - min)*:rand.uniform()) + min
   end
 
 

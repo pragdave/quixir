@@ -8,13 +8,13 @@ defmodule Quixir.Type.Choose do
     must_have:  [ ],
     state:      0,
     generator_constraints: %{
-      list: []
+      from: []
     },
   }
 
 
-  def create(list) when is_list(list) and length(list) > 0 do
-    Type.add_to_constraints(@default_type_params, :list, list)
+  def create(from: from ) do
+    Type.add_to_constraints(@default_type_params, :from, from)
   end
 
 
@@ -25,14 +25,14 @@ defmodule Quixir.Type.Choose do
   The next value is chosen randomly from generator_constraints.list
   """
   def next_value(type, locals) do
-    list  = type.generator_constraints.list
-    index = :rand.uniform(length(list)) - 1
+    from  = type.generator_constraints.from
+    index = :rand.uniform(length(from)) - 1
 
-    case Enum.at(list, index) do
+    case Enum.at(from, index) do
       nested_type = %{__struct__: Quixir.Type} ->
         { val, updated_type } = Type.next_value(nested_type, locals)
-        list = List.update_at(list, index, fn _ -> updated_type end)
-        { val, Type.add_to_constraints(type, :list, list) }
+        from = List.update_at(from, index, fn _ -> updated_type end)
+        { val, Type.add_to_constraints(type, :from, from) }
 
       val ->
         { val, type }

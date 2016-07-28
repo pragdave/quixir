@@ -1,6 +1,8 @@
 defmodule Quixir.Type do
 
   @types_in_any [
+    Quixir.Type.Choose,
+    Quixir.Type.Float,
     Quixir.Type.Int,
     Quixir.Type.List
   ]
@@ -13,7 +15,7 @@ defmodule Quixir.Type do
   #   end)
   # end
 
-  alias Quixir.Type.{Any, Float, Int, List}
+  alias Quixir.Type.{Any, Choose, Float, Int, List}
 
 
   defstruct(
@@ -37,6 +39,51 @@ defmodule Quixir.Type do
   #######
 
   def any(), do: Any.create()
+
+  ##########
+  # choose #
+  ##########
+
+  def choose(from) when is_list(from) do
+    Choose.create(from: from)
+  end
+
+  def bool() do
+    Choose.create(from: [ false, true ])
+  end
+
+  #########
+  # float #
+  ##Q######
+
+  def float() do
+    Float.create([])
+  end
+
+  def float(min, max)
+  when (is_number(min) or is_function(min)) and (is_number(max) or is_function(max)) do
+    Float.create(min: min, max: max)
+  end
+
+  def float(max) when is_number(max) or is_function(max) do
+    Float.create(min: 1.0, max: max)
+  end
+
+  def float(options) when is_list(options) do
+    Float.create(options)
+  end
+
+  def positive_float do
+    Float.create(min: Float.epsilon)
+  end
+
+  def negative_float do
+    Float.create(max: -Float.epsilon)
+  end
+
+  def nonnegative_float do
+    Float.create(min: 0.0)
+  end
 
   #######
   # int #
@@ -69,39 +116,6 @@ defmodule Quixir.Type do
 
   def nonnegative_int do
     Int.create(min: 0)
-  end
-
-  #######
-  # float #
-  #######
-
-  def float() do
-    Float.create([])
-  end
-
-  def float(min, max)
-  when (is_number(min) or is_function(min)) and (is_number(max) or is_function(max)) do
-    Float.create(min: min, max: max)
-  end
-
-  def float(max) when is_number(max) or is_function(max) do
-    Float.create(min: 1.0, max: max)
-  end
-
-  def float(options) when is_list(options) do
-    Float.create(options)
-  end
-
-  def positive_float do
-    Float.create(min: Float.epsilon)
-  end
-
-  def negative_float do
-    Float.create(max: -Float.epsilon)
-  end
-
-  def nonnegative_float do
-    Float.create(min: 0.0)
   end
 
   ########

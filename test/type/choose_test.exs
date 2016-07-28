@@ -4,12 +4,12 @@ defmodule Types.ChooseTest do
 
   alias  Quixir.Type
   import Type
-  import Type.Choose
+  import Quixir.Props, only: [ props: 2 ]
 
 
   describe "a choice of literals" do
     test "returns them reasonably distributed" do
-      counts = create([:a, "cat", 99])
+      counts = choose([:a, "cat", 99])
       |> Type.as_stream([])
       |> Stream.take(100)
       |> Enum.reduce(%{ :a => 0, "cat" => 0, 99 => 0}, fn (val, counts) ->
@@ -27,7 +27,7 @@ defmodule Types.ChooseTest do
 
   describe "a mixture of literals and generators" do
     test "returns their values" do
-      counts = create([:a, int(10, 20), list(2)])
+      counts = choose([:a, int(10, 20), list(2)])
       |> Type.as_stream([])
       |> Stream.take(100)
       |> Enum.reduce(%{ :a => 0, :int => 0, :list => 0}, fn (val, counts) ->
@@ -56,5 +56,27 @@ defmodule Types.ChooseTest do
       end
     end
   end
-  
+
+  describe "bool()" do
+    test "returns true and false" do
+      props val: bool do
+        assert is_boolean(val)
+      end
+    end
+
+    test "returns a good distribution" do
+      {trues, falses} = bool()
+      |> Type.as_stream([])
+      |> Stream.take(100)
+      |> Enum.partition(&(&1))
+
+      assert length(trues) + length(falses) == 100
+
+      with likely_range = 45..55 do
+        assert length(trues)  in likely_range
+        assert length(falses) in likely_range
+      end
+    end
+  end
+
 end

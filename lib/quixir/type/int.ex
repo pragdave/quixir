@@ -17,6 +17,7 @@ defmodule Quixir.Type.Int do
 
 
   def create(options) when is_list(options) do
+
     options = Enum.into(options, %{})
 
     params = @default_type_params

@@ -1,8 +1,6 @@
 
 defmodule Quixir.Props do
 
-
-
   @doc """
   The call
 
@@ -50,6 +48,7 @@ defmodule Quixir.Props do
       end)
     end
 
+    #    body |> Macro.to_string |> IO.puts
     body
   end
 
@@ -83,23 +82,17 @@ defmodule Quixir.Props do
 
   defp create_one_state({name, generator}) do
     quote do
-      {unquote(name), unquote(wrap_pinned_vars(generator))}
+      { unquote(name), unquote(wrap_pinned_vars(generator)) }
     end
   end
-  
-  
+
 
   # A generator can be called in the props list as
   #
   #     props a: int
   #
   # We do nothing special for this
-
-  defp wrap_pinned_vars(code = { _, _, []}), do: code  # int()
-
-  defp wrap_pinned_vars(code = { func, context, args})
-       when is_atom(func) and is_list(context) and not is_list(args), do: code   # int
-
+  #
   # It can also be called with parameters. If so, the first will
   # be a keyword list. Inside that list, the values may refer
   # to the current value of a previous element in the list by
@@ -113,61 +106,62 @@ defmodule Quixir.Props do
   #     props a: int, b: int(derived: [min: fn vals -> vals[:a] + 1 end])
   #
 
-  defp wrap_pinned_vars({ form, context, [ params | rest ]}) when is_list(params) do
-    case Enum.reduce(params, {[], []}, &maybe_wrap/2) do
 
-      { regular, [] } ->
-        { form, context, [ regular | rest ] }
+  defp wrap_pinned_vars({gen, context, [ args = [ { _, _ } | _ ] | rest ]}) do
+    { regular, derived } = wrap_each(args)
 
-      { regular, wrapped } ->
-        { form, context, [ regular ++ [ {:derived, wrapped} ] | rest ] }
-
-    end
-  end
-
-  # this deals with cases like int(10) or int(^a)
-  defp wrap_pinned_vars({ form, context, [ param | rest ]}) do
-    new_param = if has_pins?(param) do
-      { form, context, replace_pinned_vars_with_function(param) }
+    final_args = if length(derived) > 0 do
+      regular ++ [ derived: derived ]
     else
-      param
+      regular
     end
-    { form, context, [ new_param | rest ]}
+
+    {
+      gen,
+      context,
+      [ final_args | rest ]
+    }
   end
 
-  # `normal` is list of params that are not wrapped, and `wrapped`
-  # is those that are
-  defp maybe_wrap({name, value}, {normal, wrapped}) do
-    if has_pins?(value) do
-      wrapped_param = replace_pinned_vars_with_function(value)
-      { normal, [ { name, wrapped_param } | wrapped ] }
+  defp wrap_pinned_vars(other), do: other
+
+  defp wrap_each(args) do
+    Enum.reduce(args, { [], [] }, &wrap_one_arg/2)
+  end
+
+  defp wrap_one_arg({name, value}, { regular, derived }) do
+    if has_pinned_vars?(value) do
+      new_value = quote do
+        fn q_locals ->
+          unquote(Macro.prewalk(value, [], &pin_subexpr/2) |> elem(0))
+        end
+      end
+      {
+        regular,
+        [ { name, new_value } | derived ]
+      }
     else
-      { [ { name, value } | normal ],  wrapped }
+      {
+        [ { name, value } | regular ],
+        derived
+      }
     end
   end
 
-  defp has_pins?(code) do
-    Macro.prewalk(code, false, fn
-      {:^, _, _}, _ -> { nil,  true }
-      node, flag    -> { node, flag }
+  def pin_subexpr({:^, meta, [{var, _, _}]},  acc) do
+    { quote(do: q_locals[unquote(var)]), acc }
+  end
+  
+  def pin_subexpr(arg,  acc) do
+    { arg, acc }
+  end
+
+  def has_pinned_vars?(expr) do
+    Macro.prewalk(expr, false, fn
+      {:^, _, _}, _acc -> { :ok, true }
+      node, acc        -> { node, acc }
     end)
     |> elem(1)
-  end
-
-  defp replace_pinned_vars_with_function(code) do
-    { updated_code, _vars } = Macro.prewalk(code, [], fn
-      {:^, _, [{var, context, _}]}, acc ->
-        {
-          quote(do: q_locals[unquote(var)]),
-          [var | acc]
-        }
-      node, acc ->
-        {node, acc}
-    end)
-
-    quote do
-      fn (q_locals) -> unquote(updated_code) end
-    end
   end
 
   def set_params(property_list) do

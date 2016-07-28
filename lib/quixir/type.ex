@@ -40,11 +40,12 @@ defmodule Quixir.Type do
     Int.create([])
   end
 
-  def int(min, max) when is_integer(min) and is_integer(max) do
+  def int(min, max)
+  when (is_integer(min) or is_function(min)) and (is_integer(max) or is_function(max)) do
     Int.create(min: min, max: max)
   end
 
-  def int(max) when is_integer(max) do
+  def int(max) when is_integer(max) or is_function(max) do
     Int.create(min: 1, max: max)
   end
 
@@ -72,12 +73,13 @@ defmodule Quixir.Type do
     Float.create([])
   end
 
-  def float(min, max) when is_number(min) and is_number(max) do
+  def float(min, max)
+  when (is_number(min) or is_function(min)) and (is_number(max) or is_function(max)) do
     Float.create(min: min, max: max)
   end
 
-  def float(max) when is_number(max) do
-    Float.create(min: 1, max: max)
+  def float(max) when is_number(max) or is_function(max) do
+    Float.create(min: 1.0, max: max)
   end
 
   def float(options) when is_list(options) do

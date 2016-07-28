@@ -19,23 +19,23 @@ defmodule Type.FloatTest do
     test "with no arguments" do
       with f = float, constraints = f.generator_constraints do
         assert f.type == Float
-
+  
         assert  0.0 in f.must_have
         assert -1.0 in f.must_have
         assert  1.0 in f.must_have
-
+  
         assert Float.epsilon  in f.must_have
         assert -Float.epsilon in f.must_have
-
+  
         assert length(f.must_have) == 5
-
+  
         assert is_float(constraints.min)
         assert is_float(constraints.max)
-
+  
         assert constraints.min < constraints.max
       end
     end
-
+  
     test "with 1 argument" do
       with f = float(99.5), constraints = f.generator_constraints do
         assert constraints.max == 99.5
@@ -123,18 +123,25 @@ defmodule Type.FloatTest do
         assert val <= 10
       end
     end
-  
+    
     test "positive_float" do
       props val: positive_float do
         assert is_float(val)
         assert val > 0.0
       end
     end
-  
+    
     test "negative_float" do
       props val: negative_float do
         assert is_float(val)
         assert val < 0
+      end
+    end
+  
+    test "nonnegative_float" do
+      props val: nonnegative_float do
+        assert is_float(val)
+        assert val >= 0.0
       end
     end
   
@@ -146,7 +153,7 @@ defmodule Type.FloatTest do
       assert f |> Type.as_stream([]) |> Enum.take(3) == [5.0, 5.5, 9.25]
     end
   end
-
+  
   describe "Uniform distribution" do
     test "has a mean around the middle" do
       f = float(min: 20, max: 40)

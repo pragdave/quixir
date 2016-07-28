@@ -50,13 +50,15 @@ defmodule PropsTest do
     end
   end
 
-  test "two types, second depends on first, not using options" do
-    props a: int, b: int(^a+1, ^a+10) do
-      assert is_integer(a)
-      assert is_integer(b)
-      assert a < b
-    end
-  end
+  # @tag :pending
+  # 
+  # test "two types, second depends on first, not using options" do
+  #   props a: int, b: int(^a+1, ^a+10) do
+  #     assert is_integer(a)
+  #     assert is_integer(b)
+  #     assert a < b
+  #   end
+  # end
   
   test "runs 100 times by default" do
     table = :ets.new(__MODULE__, [])

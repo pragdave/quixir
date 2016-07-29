@@ -4,7 +4,8 @@ defmodule Quixir.Type do
     Quixir.Type.Choose,
     Quixir.Type.Float,
     Quixir.Type.Int,
-    Quixir.Type.List
+    Quixir.Type.List,
+    Quixir.Type.String
   ]
 
   @all_types [ Quixir.Type.Any | @types_in_any ]
@@ -15,7 +16,7 @@ defmodule Quixir.Type do
   #   end)
   # end
 
-  alias Quixir.Type.{Any, Choose, Float, Int, List}
+  alias Quixir.Type.{Any, Choose, Float, Int, List, String}
 
 
   defstruct(
@@ -127,6 +128,12 @@ defmodule Quixir.Type do
   def list(min_length, max_length), do: List.create(min_length, max_length)
   
 
+  ##########
+  # string #
+  ##########
+
+  def string(),     do: string([])
+  def string(opts), do: String.create(opts)
 
 
   #########################

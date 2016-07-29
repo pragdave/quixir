@@ -17,7 +17,7 @@ defmodule Types.ChooseTest do
            Map.put(counts, val, counts[val]+1);
       end)
 
-      with likely_range = 20..45 do
+      with likely_range = 10..60 do
         assert counts[:a]    in likely_range
         assert counts["cat"] in likely_range
         assert counts[99]    in likely_range
@@ -49,7 +49,7 @@ defmodule Types.ChooseTest do
         end
       end)
       
-      with likely_range = 20..45 do
+      with likely_range = 10..60 do
         assert counts[:a]    in likely_range
         assert counts[:int]  in likely_range
         assert counts[:list] in likely_range
@@ -72,7 +72,7 @@ defmodule Types.ChooseTest do
 
       assert length(trues) + length(falses) == 100
 
-      with likely_range = 45..55 do
+      with likely_range = 10..60 do
         assert length(trues)  in likely_range
         assert length(falses) in likely_range
       end

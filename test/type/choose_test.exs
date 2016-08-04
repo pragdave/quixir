@@ -72,7 +72,7 @@ defmodule Types.ChooseTest do
 
       assert length(trues) + length(falses) == 100
 
-      with likely_range = 10..60 do
+      with likely_range = 10..60\] do
         assert length(trues)  in likely_range
         assert length(falses) in likely_range
       end

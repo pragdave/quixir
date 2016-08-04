@@ -1,24 +1,26 @@
 defmodule Quixir.Mixfile do
   use Mix.Project
 
-  def project do
-    [
-      app:             :quixir,
-      version:         "0.1.0",
-      elixir:          "~> 1.3",
-      build_embedded:  Mix.env == :prod,
-      start_permanent: Mix.env == :prod,
-      deps:            deps()
-    ]
-  end
+  @version "0.1.0"
 
-  def application do
-    [
-      applications: [:logger]
-    ]
-  end
+  @deps [
+    pollution: "~> 0.0"
+  ]
 
-  defp deps do
-    []
-  end
+  @project [
+    app:             :quixir,
+    version:         @version,
+    elixir:          "~> 1.3",
+    build_embedded:  Mix.env == :prod,
+    start_permanent: Mix.env == :prod,
+    deps:            @deps
+  ]
+
+  @application []
+
+
+  # ------------------------------------------------------------
+
+  def project,     do: @project
+  def application, do: @application
 end

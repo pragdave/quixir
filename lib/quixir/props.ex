@@ -48,7 +48,7 @@ defmodule Quixir.Props do
       end)
     end
 
-    #    body |> Macro.to_string |> IO.puts
+    # body |> Macro.to_string |> IO.puts
     body
   end
 

@@ -5,7 +5,8 @@ defmodule Quixir.Type do
     Quixir.Type.Float,
     Quixir.Type.Int,
     Quixir.Type.List,
-    Quixir.Type.String
+    Quixir.Type.String,
+    Quixir.Type.Tuple,
   ]
 
   @all_types [ Quixir.Type.Any | @types_in_any ]
@@ -16,7 +17,7 @@ defmodule Quixir.Type do
   #   end)
   # end
 
-  alias Quixir.Type.{Any, Choose, Float, Int, List, String}
+  alias Quixir.Type.{Any, Choose, Float, Int, List, String, Tuple}
 
 
   defstruct(
@@ -39,18 +40,23 @@ defmodule Quixir.Type do
   # any #
   #######
 
-  def any(), do: Any.create()
+  def any(), do: Choose.create(from: @types_in_any)
 
+
+  ########
+  # bool #
+  ########
+
+  def bool() do
+    Choose.create(from: [ false, true ])
+  end
+  
   ##########
   # choose #
   ##########
 
   def choose(from) when is_list(from) do
     Choose.create(from: from)
-  end
-
-  def bool() do
-    Choose.create(from: [ false, true ])
   end
 
   #########
@@ -135,6 +141,20 @@ defmodule Quixir.Type do
   def string(),     do: string([])
   def string(opts), do: String.create(opts)
 
+  #########
+  # tuple #
+  #########
+
+  def tuple(),                       do: Tuple.create([])
+  def tuple(min_length, max_length) when is_integer(min_length) and is_integer(max_length) do
+    Tuple.create(min_length: min_length, max_length: max_length)
+  end
+  def tuple(max_length) when is_integer(max_length) do
+    Tuple.create(max_length: max_length)
+  end
+  def tuple(options = [ {_, _} | _ ]) do
+    Tuple.create(options)
+  end
 
   #########################
   # Helpers used by types #
@@ -188,5 +208,5 @@ defmodule Quixir.Type do
     Map.put(params, :must_have, updated_must_have)
   end
 
-  
+
 end

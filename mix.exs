@@ -3,17 +3,37 @@ defmodule Quixir.Mixfile do
 
   @version "0.1.0"
 
+  @package [
+    licenses:    ["apache 2.0"],
+    maintainers: ["Dave Thomas (pragdave) <dave@pragdave.me>"],
+    links:       %{
+      "Github" => "https://github.com/pragdave/quixir",
+    },
+  ]
+  
   @deps [
-    pollution: "~> 0.0"
+    { :pollution, git: "git://github.com/pragdave/pollution.git" }
   ]
 
+  @if_production  Mix.env == :prod
+
+  @docs [
+    extras: [ "README.md" ],
+    main:   "Quixir"
+  ]
+  
   @project [
     app:             :quixir,
     version:         @version,
     elixir:          "~> 1.3",
-    build_embedded:  Mix.env == :prod,
-    start_permanent: Mix.env == :prod,
-    deps:            @deps
+    build_embedded:  @if_production,
+    start_permanent: @if_production,
+    deps:            @deps,
+    description:     """
+    A simple property-based testing framework written in pure Elixir.
+    """,
+    package:         @package,
+    docs:            @docs
   ]
 
   @application []

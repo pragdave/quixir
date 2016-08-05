@@ -2,17 +2,17 @@
 
 [Property-based
 testing](http://blog.jessitron.com/2013/04/property-based-testing-what-is-it.html)
-is a technique for testing your code by considering the types of its
-inputs and outputs. Rather that using explicit values in your tests,
-you instead try to define the types of the values to feed it, and the
-properties of the results produced.
+is a technique for testing your code by considering general properties
+of the functions you write. Rather that using explicit values in your
+tests, you instead try to define the types of the values to feed it,
+and the properties of the results produced.
 
 For example, given a list, you know that reversing it should produce a
 list with the same number of elements. You can specify this in Quixir
 like this:
 
 ~~~ elixir
-props some_list: list do
+ptest some_list: list do
   reversed = my_reverse(some_list)
   assert length(reversed) == length(some_list)
 end
@@ -78,34 +78,34 @@ defmodule TestReverse do
   use Quixir
 
   test "a reversed list has the same length as the original" do
-    props original: list do
+    ptest original: list do
       reversed = reverse(original)
       assert length(reversed) == length(original)
     end
   end
 
   test "reversing a list twice returns the original" do
-    props original: list do
+    ptest original: list do
       new_list = original |> reverse |> reverse
       assert new_list == original
     end
   end
 
   test "reversing a list of length 1 does nothing" do
-    props original: list(length: 1) do
+    ptest original: list(length: 1) do
       assert reverse(original) == original
     end
   end
 
   test "reversing a list of length 2 swaps the elements" do
-    props original: list(length: 2) do
+    ptest original: list(length: 2) do
       [ b, a ] = reverse(original)
       assert [ a, b ] == original
     end
   end
 
   test "reversing a list of length 3 swaps the extremes" do
-    props original: list(length: 3) do
+    ptest original: list(length: 3) do
       [ c, b, a ] = reverse(original)
       assert [ a, b, c ] == original
     end
@@ -118,7 +118,7 @@ end
 The general form of a property test is
 
 ~~~ elixir
-props [name1: type, name2: type, …], [option,…] do
+ptest [name1: type, name2: type, …], [option,…] do
   # code including assertions
   # this code can reference the values in name1 and name2
 end
@@ -127,7 +127,7 @@ end
 As the `options` are generally omitted, this simplifies to
 
 ~~~ elixir
-props name1: type, name2: type, …  do
+ptest name1: type, name2: type, …  do
   # code including assertions
 end
 ~~~
@@ -146,7 +146,7 @@ end
 For example:
 
 ~~~ elixir
-props [ a: int, b: int ], trace: true, repeat_for: 50 do
+ptest [ a: int, b: int ], trace: true, repeat_for: 50 do
   assert a + b == b + a
 end
 ~~~
@@ -168,6 +168,10 @@ specifies (possibly empty) lists of positive integers.
 
 * `list(of: int(min: 1))`
 
+And this is a generator for keyword lists:
+
+* `list(of: tuple(like: { atom, string })`
+
 ### Back references to values
 
 Occasionally you want to make the constraints of one type depend on
@@ -176,18 +180,21 @@ operator, `^`. For example, the following generates sets of two
 integers where the second is guaranteed to be greater the first:
 
 ~~~ elixir
-props a: int, b: int(min: ^a + 1) do
+ptest a: int, b: int(min: ^a + 1) do
   assert a < b
 end
 ~~~
 
 ## List of Type Generators
 
-. . .
+Quixir uses the [Pollution](https://github.com/pragdave/pollution)
+library to create the streams of values that are injected into the
+tests. These generators are documented here:
+https://hexdocs.pm/pollution/Pollution.VG.html
 
 ## Shrinking
 
-. . .
+Coming soon…
 
 
 ## Copyright and License

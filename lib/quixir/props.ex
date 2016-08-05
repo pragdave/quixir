@@ -1,10 +1,9 @@
-
 defmodule Quixir.Props do
 
   @doc """
   The call
 
-      props v1: type1, v2: type2 do
+      ptest v1: type1, v2: type2 do
         « code to test »
       end
 
@@ -15,7 +14,7 @@ defmodule Quixir.Props do
 
   For example:
 
-      props age: int(min: 0), resident: bool do
+      ptest age: int(min: 0, max: 100), resident: bool do
           assert PollingStation.can_vote(age, resident) == (age >= 18 && resident)
       end
 
@@ -23,18 +22,18 @@ defmodule Quixir.Props do
   may contain references to values for types that precede it in the list. In this
   case, those values must be flagged with `^`.
 
-      props factor1: int, factor2: int(min: ^factor1, max: 2*^factor1) do
+      ptest factor1: int, factor2: int(min: ^factor1, max: 2*^factor1) do
           # ...
       end
   """
 
-  defmacro props(property_list, options \\ [], block) do
-    _props(property_list, options, block)
+  defmacro ptest(property_list, options \\ [], block) do
+    _ptest(property_list, options, block)
   end
   
 
 
-  defp _props(property_list, options, do: block) do
+  defp _ptest(property_list, options, do: block) do
 
     try_count  = (options[:repeat_for] || 100)
 
@@ -54,7 +53,7 @@ defmodule Quixir.Props do
 
   # Given
   #
-  #     props age: int(min: 0), resident: bool do
+  #     ptest age: int(min: 0), resident: bool do
   #
   # construct the map
   #
@@ -171,7 +170,7 @@ defmodule Quixir.Props do
   def set_one_param({name, _generator}) do
     quote do
       {unquote({name, [], nil}), q_tmp} =
-        Quixir.Type.next_value(q_state[unquote(name)], q_locals)
+        Pollution.Generator.next_value(q_state[unquote(name)], q_locals)
       q_locals = q_locals |> Map.put(unquote(name), unquote({name, [], nil}))
       q_state = q_state |> Map.put(unquote(name), q_tmp)
     end

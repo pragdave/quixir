@@ -26,7 +26,7 @@ them." In this particular case, we'll generate a hundred lists. These
 will vary in length, and vary in content, but we guarantee to include
 at least one empty list and one list containing a single element (as these
 are both common boundary cases that can break code). The overall test
-passes if the assertion is contains is try for all these lists.
+passes if the assertion it contains is true for all these lists.
 
 ## What's The Big Deal?
 

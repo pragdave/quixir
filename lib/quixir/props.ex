@@ -42,7 +42,15 @@ defmodule Quixir.Props do
       Enum.reduce(1..unquote(try_count), q_state, fn (_i, q_state) ->
         q_locals = %{}
         unquote_splicing(set_params(property_list))
-        unquote(block)
+        try do
+          unquote(block)
+        rescue
+          e in [ ExUnit.AssertionError ] ->
+            IO.inspect q_locals
+            IO.inspect e
+            reraise ExUnit.AssertionError, [ message: "BOOM!"], System.stacktrace
+        end
+
         q_state
       end)
     end

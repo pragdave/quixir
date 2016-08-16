@@ -1,5 +1,7 @@
 defmodule Quixir.Props do
 
+  alias Quixir.Shrinker
+
   @doc """
   The call
 
@@ -32,13 +34,13 @@ defmodule Quixir.Props do
   end
   
 
-
   defp _ptest(property_list, options, do: block) do
 
     try_count  = (options[:repeat_for] || 100)
 
     body = quote do
       q_state = unquote(create_generator_state(property_list))
+      q_locals = %{}
       Enum.reduce(1..unquote(try_count), q_state, fn (_i, q_state) ->
         q_locals = %{}
         unquote_splicing(set_params(property_list))
@@ -46,16 +48,30 @@ defmodule Quixir.Props do
           unquote(block)
         rescue
           e in [ ExUnit.AssertionError ] ->
-            IO.inspect q_locals
-            IO.inspect e
-            reraise ExUnit.AssertionError, [ message: "BOOM!"], System.stacktrace
+            shrinker = fn (q_locals) ->
+              try do
+                unquote_splicing(assign_locals(property_list))
+                unquote(block)
+                true
+              rescue e in [ExUnit.AssertionError] ->
+                false
+              end
+          end
+          try do
+            Shrinker.shrink({shrinker, q_state, q_locals})
+          rescue qe in [Quixir.PropertyError] ->
+            raise(ExUnit.AssertionError, [
+                  message: "#{e.message}\n#{qe.message}",
+                  expr:    e.expr
+                ])
+          end
         end
 
         q_state
       end)
     end
 
-    # body |> Macro.to_string |> IO.puts
+    #    body |> Macro.to_string |> IO.puts
     body
   end
 
@@ -83,7 +99,7 @@ defmodule Quixir.Props do
     {
       :%{},
       [],
-      property_list |> Enum.map(&create_one_state/1)
+      (property_list |> Enum.map(&create_one_state/1))
     }
   end
 
@@ -179,11 +195,21 @@ defmodule Quixir.Props do
     quote do
       {unquote({name, [], nil}), q_tmp} =
         Pollution.Generator.next_value(q_state[unquote(name)], q_locals)
+
       q_locals = q_locals |> Map.put(unquote(name), unquote({name, [], nil}))
-      q_state = q_state |> Map.put(unquote(name), q_tmp)
+      q_state  = q_state  |> Map.put(unquote(name), q_tmp)
     end
   end
 
 
+  def assign_locals(properties) do
+    Enum.map(properties, &assign_one_local/1)
+  end
+
+  def assign_one_local({name, _}) do
+    quote do
+      unquote({name, [], nil}) = q_locals[unquote(name)]
+    end
+  end
 
 end

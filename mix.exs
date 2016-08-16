@@ -12,7 +12,8 @@ defmodule Quixir.Mixfile do
   ]
   
   @deps [
-    { :pollution, git: "git://github.com/pragdave/pollution.git" },
+#    { :pollution, git: "git://github.com/pragdave/pollution.git" },
+    { :pollution, path: "../pollution" },
     { :ex_doc,         ">= 0.0.0", only: :dev },
   ]
 

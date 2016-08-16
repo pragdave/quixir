@@ -54,6 +54,7 @@ defmodule PropsTest do
     :ets.insert(table, { :repeat_for, 0 })
   
     ptest [a: int] do
+      assert is_integer(a)
       :ets.update_counter(table, :repeat_for, 1)
     end
   
@@ -66,6 +67,7 @@ defmodule PropsTest do
     :ets.insert(table, { :repeat_for, 0 })
   
     ptest [a: int], repeat_for: 123 do
+      assert is_integer(a)
       :ets.update_counter(table, :repeat_for, 1)
     end
   

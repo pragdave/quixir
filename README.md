@@ -18,8 +18,11 @@ ptest some_list: list do
 end
 ~~~
 
-This says that, for any list `some_list`, passing it through
-`my_reverse` will produce a result of the same length.
+This says that we're going to run a property test. It will run the
+block with a large number of different lists, and inside the block you
+can refer to each list as `some_list`. Inside the block, we have
+normal ExUnit test code: we produce a reversed copy of the list, then
+assert its length is the same as the original.
 
 But what list do we actually pass in? The simple answer is "lots of
 them." In this particular case, we'll generate a hundred lists. These
@@ -76,6 +79,8 @@ Here's a full test file:
 defmodule TestReverse do
   use ExUnit.Case
   use Quixir
+
+  import MyList, only: [ reverse: 1 ]
 
   test "a reversed list has the same length as the original" do
     ptest original: list do
@@ -189,8 +194,9 @@ end
 
 Quixir uses the [Pollution](https://github.com/pragdave/pollution)
 library to create the streams of values that are injected into the
-tests. These generators are documented here:
-https://hexdocs.pm/pollution/Pollution.VG.html
+tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution/Pollution.VG.html), and embedded here for convenience.
+
+<iframe src="https://hexdocs.pm/pollution/Pollution.VG.html" height="80%" width="100%"></iframe>
 
 ## Shrinking
 

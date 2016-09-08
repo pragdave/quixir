@@ -193,7 +193,7 @@ end
 
 ## Examples
 
-These examples don't show the `test "xxxx" do/end` wrappers.
+(These examples don't show the `test "xxxx" do/end` wrappers.)
 
 ~~~ elixir
 ptest numbers: list(choose(from: [ int, float ])) do
@@ -201,9 +201,14 @@ ptest numbers: list(choose(from: [ int, float ])) do
   # a mixture of ints and floats
 end
 
-ptest x: positive_int, y: value(^x * ^x) do
+ptest x: positive_int(y: value(^x * ^x)) do
   # x is a random positive integer, and y is the square
   # of that integer
+end
+
+ptest x: positive_int, y: int(min: ^x+1), z: int(min: ^y + 1)  do
+  # x is a random positive integer, y is larger than x,
+  # and z is larger than y
 end
 
 ptest options: map(of: { atom, string}, min: 3, max: 7) do
@@ -233,7 +238,7 @@ ptest person: struct(Person) do
   # integer
 end
 
-ptest person: struct(%Person{ name: string(chars: ascii),
+ptest person: struct(%Person{ name: string(chars: :ascii),
                               age:  int(min: 1, max: 125)) do
   # This time, the name will be a random string of 7-bit ascii,
   # and the age will be an integer from 1 to 125.

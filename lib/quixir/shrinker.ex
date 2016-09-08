@@ -9,12 +9,12 @@ defmodule Quixir.Shrinker do
   use ExUnit.Case
 
 
-  def shrink(env = {_code, state, locals}) do
+  def shrink(env) do
     # see if it fails initially. If so, start the shrinking
     try_to_run(env, ok: &unexpected_pass/1, fail: &start_shrink/1)
   end
 
-  defp try_to_run(env = {code, state, locals}, ok: passed, fail: failed) do
+  defp try_to_run(env = {code, _state, locals}, ok: passed, fail: failed) do
     if code.(locals) do
       passed.(env)
     else

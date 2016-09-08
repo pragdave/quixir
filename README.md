@@ -206,7 +206,7 @@ ptest x: positive_int(y: value(^x * ^x)) do
   # of that integer
 end
 
-ptest x: positive_int, y: int(min: ^x+1), z: int(min: ^y + 1)  do
+ptest x: positive_int, y: int(min: ^x+1), z: int(min: ^y+1)  do
   # x is a random positive integer, y is larger than x,
   # and z is larger than y
 end

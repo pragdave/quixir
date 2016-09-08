@@ -1,7 +1,7 @@
 defmodule Quixir.Mixfile do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.9.0"
 
   @package [
     licenses:    ["apache 2.0"],
@@ -12,18 +12,17 @@ defmodule Quixir.Mixfile do
   ]
   
   @deps [
-#    { :pollution, git: "git://github.com/pragdave/pollution.git" },
-    { :pollution, path: "../pollution" },
-    { :ex_doc,         ">= 0.0.0", only: :dev },
+    { :pollution, "~> 0.9" },
+    { :ex_doc,    ">= 0.0.0", only: [:dev, :test] },
   ]
-
-  @if_production  Mix.env == :prod
 
   @docs [
     extras: [ "README.md" ],
     main:   "Quixir"
   ]
   
+  @if_production  Mix.env == :prod
+
   @project [
     app:             :quixir,
     version:         @version,

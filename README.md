@@ -191,11 +191,61 @@ ptest a: int, b: int(min: ^a + 1) do
 end
 ~~~
 
+## Examples
+
+These examples don't show the `test "xxxx" do/end` wrappers.
+
+~~~ elixir
+ptest numbers: list(choose(from: [ int, float ])) do
+  # numbers will be a randomly sized list containing
+  # a mixture of ints and floats
+end
+
+ptest x: positive_int, y: value(^x * ^x) do
+  # x is a random positive integer, and y is the square
+  # of that integer
+end
+
+ptest options: map(of: { atom, string}, min: 3, max: 7) do
+  # options will be a map with between 3 and 7 entries.
+  # each entry will have an atom as a key and a string
+  # as a value.
+end
+
+ptest options: map(like: %{ name: string, age: int(min:0, max: 130) }) do
+  # options will be a map with two elements, a name and an age.
+  # The name will be a string, and the age an integer
+  # betweem 0 and 130
+end
+
+ptest options: list(of: { atom, string}, min: 3, max: 7) do
+  # options will be a keyword list with between 3 and 7 entries.
+end
+
+defmodule Person do
+  defstruct name: "", age: 0
+end
+
+ptest person: struct(Person) do
+  # person will be instances of struct person. Because the
+  # default name is a string, the name in this test struct
+  # will be a random string. Similarly, age will be a random
+  # integer
+end
+
+ptest person: struct(%Person{ name: string(chars: ascii),
+                              age:  int(min: 1, max: 125)) do
+  # This time, the name will be a random string of 7-bit ascii,
+  # and the age will be an integer from 1 to 125.
+end
+~~~
+
+
 ## List of Type Generators
 
 Quixir uses the [Pollution](https://github.com/pragdave/pollution)
 library to create the streams of values that are injected into the
-tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution/Pollution.VG.html). Here's a copy:
+tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution/Pollution.VG.html). Here's a (poorly formatted) version:
 
 <!-- pollution -->
 

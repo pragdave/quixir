@@ -32,11 +32,11 @@ defmodule Mix.Tasks.UpdateReadme do
       String.split(f.doc, "\n")
       |> Enum.map(&"  #{&1}")
       |> Enum.join("\n")
-      |> String.replace("## ", "#### ")
-    [ indented_doc, "\n* #{f.signature}\n" | result ]
+      |> String.replace("## ", "### ")
+    [ indented_doc, signature(f.signature) | result ]
   end
 
   def signature(sig) do
-    "\n* #{String.replace(sig, "\\", "\\\\\\\\")}\n"
+    "\n* #{String.replace(sig, "\\\\", "\\\\\\\\")}\n"
   end
 end

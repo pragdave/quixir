@@ -38,6 +38,6 @@ defmodule Mix.Tasks.UpdateReadme do
   end
 
   def signature(sig) do
-    "\n* \#\# #{String.replace(sig, "\\\\", "\\\\\\\\")}\n"
+    "\n* \#\# `#{String.replace(sig, "\\\\", "\\\\\\\\")}`\n"
   end
 end

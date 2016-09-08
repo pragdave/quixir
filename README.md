@@ -199,7 +199,7 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
 
 <!-- pollution -->
 
-* ## any()
+* ## `any()`
 
   Generates a stream of values of any of the types: atom, float, int,
   list, map, string, and tuple. Structs are not included, as they require
@@ -209,10 +209,10 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
   the `choose/2` function.
   
 
-* ## atom(options \\ [])
+* ## `atom(options \\ [])`
 
 
-* ## bool()
+* ## `bool()`
 
   Return a stream of random booleans (`true` or `false`).
   
@@ -222,7 +222,7 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
         [true, false, true, true, false]
   
 
-* ## choose(options)
+* ## `choose(options)`
 
   Each time a value is needed, randomly choose a generator
   from the list and invoke it.
@@ -233,7 +233,7 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
         [6, false, 4, true, true]
   
 
-* ## float(options \\ [])
+* ## `float(options \\ [])`
 
   Return a stream of random floating point numbers.
   
@@ -270,7 +270,7 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
   • `positive_float()`   • `negative_float`   • `non_negative_float`
   
 
-* ## int(options \\ [])
+* ## `int(options \\ [])`
 
   Return a stream of random integers.
   
@@ -305,7 +305,7 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
   • `positive_int()`   • `negative_int`   • `non_negative_int`
   
 
-* ## list()
+* ## `list()`
 
   Return a stream of lists. Each list will have a random length (within limits),
   and each element in each list will be randomly chosen from the specified types.
@@ -375,13 +375,13 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
   
   
 
-* ## list(size)
+* ## `list(size)`
 
 
-* ## list(min, max)
+* ## `list(min, max)`
 
 
-* ## map(options \\ [])
+* ## `map(options \\ [])`
 
   Create maps that either mirror a particular structure or that
   contain random numbers of elements.
@@ -418,30 +418,30 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
   
   
 
-* ## negative_float()
+* ## `negative_float()`
 
   Return a stream of floats not greater than -1.0. (Arguably this should
   be "not greater than _-epsilon_"). Same as `float(max: -1.0)`
   
 
-* ## negative_int()
+* ## `negative_int()`
 
   Return a stream of integers less than 0. Same as `int(max: -1)`
   
 
-* ## nonnegative_float()
+* ## `nonnegative_float()`
 
   Return a stream of floats greater than or equal to zero.
   Same as `float(min: 0.0)`
   
 
-* ## nonnegative_int()
+* ## `nonnegative_int()`
 
   Return a stream of integers greater than or equal to 0.
   Same as `int(min: 0)`
   
 
-* ## pick_one(options)
+* ## `pick_one(options)`
 
   Randomly chooses a generator from the list, and then returns a stream of
   values that it produces. This choice is made only once—call `pick_one`
@@ -468,18 +468,18 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
       [false, true, false, false, false]
   
 
-* ## positive_float()
+* ## `positive_float()`
 
   Return a stream of floats not less than 1.0. (Arguably this should
   be "not less than _epsilon_"). Same as `float(min: 1.0)`
   
 
-* ## positive_int()
+* ## `positive_int()`
 
   Return a stream of integers not less than 1. Same as `int(min: 1)`
   
 
-* ## seq(options)
+* ## `seq(options)`
 
   Give `seq` a list of generators (using the `of:` option).
   It will cycle through these as it streams values.
@@ -491,7 +491,7 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
       [0, true, 0.0, -1, true, -1.0, 1, true, 1.0, -702]
   
 
-* ## string(options \\ [])
+* ## `string(options \\ [])`
 
   Return a stream of strings of randomly varying length.
   
@@ -534,7 +534,7 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
   
   
 
-* ## struct(template)
+* ## `struct(template)`
 
   Generate a stream of structs. Before starting, the generator reflects
   on the struct that is passed in, looking at the types of the values
@@ -570,7 +570,7 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
       struct(%MyStruct{an_int: int(min: 20), other: string})
   
 
-* ## tuple(options \\ [])
+* ## `tuple(options \\ [])`
 
   Generate a stream of tuples. The default is to create tuples of varying sizes
   with varying content, which is unlikely to be useful. You'll more likely want
@@ -602,7 +602,7 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
   
   
 
-* ## value(val)
+* ## `value(val)`
 
   Generates an infinite stream where each element is its parameter.
   

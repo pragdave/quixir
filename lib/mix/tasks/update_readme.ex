@@ -16,12 +16,13 @@ defmodule Mix.Tasks.UpdateReadme do
       |> Enum.reverse
       |> Enum.join("\n")
 
-    readme =
-        File.read!("README.md")
-        |> String.replace(~r{<!-- pollution -->[.\n]*<!-- cleanup -->\n}, result)
+    previous_doc = ~r{<!-- pollution -->.+<!-- cleanup -->}s
 
+    readme = File.read!("README.md")
 
-    File.write!("README.md", readme)
+    result =  String.replace(readme, previous_doc, result)
+
+    File.write!("README.md", result)
   end
 
   def fn_docs(f = %ExDoc.FunctionNode{doc: nil}, result) do

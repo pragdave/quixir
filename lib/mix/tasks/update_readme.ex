@@ -12,12 +12,13 @@ defmodule Mix.Tasks.UpdateReadme do
 
     result =
       Enum.reduce(mod.docs, ["<!-- pollution -->"], &fn_docs/2)
+      |> (&[ &2 | &1 ]).("<!-- cleanup -->")
       |> Enum.reverse
       |> Enum.join("\n")
 
     readme =
         File.read!("README.md")
-        |> String.replace("<!-- pollution -->", result)
+        |> String.replace(~r{<!-- pollution -->[.\n]*<!-- cleanup -->\n}, result)
 
 
     File.write!("README.md", readme)

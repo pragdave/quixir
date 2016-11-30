@@ -25,11 +25,11 @@ defmodule Mix.Tasks.UpdateReadme do
     File.write!("README.md", result)
   end
 
-  def fn_docs(f = %ExDoc.FunctionNode{doc: nil}, result) do
+  def fn_docs(f = %{__struct__: ExDoc.FunctionNode, doc: nil}, result) do
     [ signature(f.signature) | result ]
   end
 
-  def fn_docs(f = %ExDoc.FunctionNode{}, result) do
+  def fn_docs(f = %{__struct__: ExDoc.FunctionNode}, result) do
     indented_doc =
       String.split(f.doc, "\n")
       |> Enum.map(&"  #{&1}")

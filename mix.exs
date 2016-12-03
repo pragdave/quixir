@@ -45,9 +45,9 @@ defmodule Quixir.Mixfile do
 
   @application []
 
+
   # ------------------------------------------------------------
 
   def project,     do: @project
   def application, do: @application
-
 end

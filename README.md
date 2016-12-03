@@ -61,7 +61,7 @@ For a different approach, see
 def deps do
   [
     ...
-    { :quixir, "~> 0.1", only: :test },
+    { :quixir, "~> 0.9", only: :test },
     ...
   ]
 end
@@ -266,6 +266,31 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
 
 * ### `atom(options \\ [])`
 
+  Return a stream of atoms. The characters in the atom are drawn from
+  the ASCII printable set (space through ~).
+  
+  ### Example:
+  
+      iex> import Pollution.{Generator, VG}
+      iex> atom(max: 10) |> as_stream |> Enum.take(5)
+      [:"", :"Kv0{LGp", :"?0HX"y", :ad, :"DrS=t(Q"]
+  
+  ### Options
+  
+  * `min:` _length_
+  
+    The minimum length of an atom that will be generated (default: 0).
+  
+  * `max:` _length_
+  
+    The maximum length of an atom that will be generated (default: 255).
+  
+  * `must_have:` [ _value,_ … ]
+  
+    Values that _must be_ included in the results. There are no must-have
+    vaules by default.
+  
+  
 
 * ### `bool()`
 
@@ -669,9 +694,21 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
   
   
 <!-- cleanup -->
+
 ## Shrinking
 
-Coming soon…
+One of the perils of feeding random data into the code under test
+is that sometimes you'll get a report that your code failed when
+fed some obscure value, say -8768476943812378, but in reality it
+would also have failed if given plain -1.
+
+Shrinking is an attempt to remedy this. When a test fails, Quixir
+automatically looks at each generated paramater in turn. For each, it
+tries generating successively "simpler" values, reporting the simplest
+value that still causes the code to fail.
+
+This process is not guaranteed to find the minimal test case, but it
+still does a fairly good job of sorting out what values are important.
 
 
 ## Copyright and License

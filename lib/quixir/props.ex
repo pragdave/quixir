@@ -37,6 +37,7 @@ defmodule Quixir.Props do
   defp _ptest(property_list, options, do: block) do
 
     try_count  = (options[:repeat_for] || 100)
+    trace      = options[:trace]
 
     body = quote do
       q_state = unquote(create_generator_state(property_list))
@@ -44,6 +45,7 @@ defmodule Quixir.Props do
       Enum.reduce(1..unquote(try_count), q_state, fn (_i, q_state) ->
         q_locals = %{}
         unquote_splicing(set_params(property_list))
+        if unquote(trace), do: IO.inspect(q_locals)
         try do
           unquote(block)
         rescue

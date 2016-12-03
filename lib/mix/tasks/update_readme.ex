@@ -1,44 +1,49 @@
-defmodule Mix.Tasks.UpdateReadme do
-  use Mix.Task
+  defmodule Mix.Tasks.UpdateReadme do
 
-  @shortdoc "update README.md with the documentation from Pollution.VG"
-  def run(_) do
-    opts = %{
-      source_url_pattern: "",
-      source_root: "",
-    }
+    unless Mix.env == :prod do
 
-    [mod] = ExDoc.Retriever.docs_from_modules([Pollution.VG], opts)
+    use Mix.Task
 
-    result =
-      Enum.reduce(mod.docs, ["<!-- pollution -->"], &fn_docs/2)
-      |> (&[ &2 | &1 ]).("<!-- cleanup -->")
-      |> Enum.reverse
-      |> Enum.join("\n")
+    @shortdoc "update README.md with the documentation from Pollution.VG"
+    def run(_) do
+      opts = %{
+        source_url_pattern: "",
+        source_root: "",
+      }
 
-    previous_doc = ~r{<!-- pollution -->.+<!-- cleanup -->}s
+      [mod] = ExDoc.Retriever.docs_from_modules([Pollution.VG], opts)
 
-    readme = File.read!("README.md")
+      result =
+        Enum.reduce(mod.docs, ["<!-- pollution -->"], &fn_docs/2)
+        |> (&[ &2 | &1 ]).("<!-- cleanup -->")
+        |> Enum.reverse
+        |> Enum.join("\n")
 
-    result =  String.replace(readme, previous_doc, result)
+      previous_doc = ~r{<!-- pollution -->.+<!-- cleanup -->}s
 
-    File.write!("README.md", result)
+      readme = File.read!("README.md")
+
+      result =  String.replace(readme, previous_doc, result)
+
+      File.write!("README.md", result)
+    end
+
+    def fn_docs(f = %ExDoc.FunctionNode{doc: nil}, result) do
+      [ signature(f.signature) | result ]
+    end
+
+    def fn_docs(f = %ExDoc.FunctionNode{}, result) do
+      indented_doc =
+        String.split(f.doc, "\n")
+        |> Enum.map(&"  #{&1}")
+        |> Enum.join("\n")
+        |> String.replace("## ", "### ")
+      [ indented_doc, signature(f.signature) | result ]
+    end
+
+    def signature(sig) do
+      "\n* ### `#{String.replace(sig, "\\\\", "\\\\\\\\")}`\n"
+    end
   end
 
-  def fn_docs(f = %ExDoc.FunctionNode{doc: nil}, result) do
-    [ signature(f.signature) | result ]
-  end
-
-  def fn_docs(f = %ExDoc.FunctionNode{}, result) do
-    indented_doc =
-      String.split(f.doc, "\n")
-      |> Enum.map(&"  #{&1}")
-      |> Enum.join("\n")
-      |> String.replace("## ", "### ")
-    [ indented_doc, signature(f.signature) | result ]
-  end
-
-  def signature(sig) do
-    "\n* ### `#{String.replace(sig, "\\\\", "\\\\\\\\")}`\n"
-  end
-end
+end                        

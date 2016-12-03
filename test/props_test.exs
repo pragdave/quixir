@@ -15,7 +15,7 @@ defmodule PropsTest do
   end
 
   test "one type, no args" do
-    ptest a: int do
+    ptest [a: int] do
       assert is_integer(a)
     end
   end

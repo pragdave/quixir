@@ -1,7 +1,7 @@
 defmodule Quixir.Mixfile do
   use Mix.Project
 
-  @version "0.9.0"
+  @version "0.9.1"
 
   @package [
     licenses:    ["apache 2.0"],

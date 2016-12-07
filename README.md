@@ -97,20 +97,20 @@ defmodule TestReverse do
   end
 
   test "reversing a list of length 1 does nothing" do
-    ptest original: list(length: 1) do
+    ptest original: list(1) do
       assert reverse(original) == original
     end
   end
 
   test "reversing a list of length 2 swaps the elements" do
-    ptest original: list(length: 2) do
+    ptest original: list(2) do
       [ b, a ] = reverse(original)
       assert [ a, b ] == original
     end
   end
 
   test "reversing a list of length 3 swaps the extremes" do
-    ptest original: list(length: 3) do
+    ptest original: list(3) do
       [ c, b, a ] = reverse(original)
       assert [ a, b, c ] == original
     end
@@ -347,7 +347,7 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
   
   ### See also
   
-  • `positive_float()`   • `negative_float`   • `non_negative_float`
+  • `positive_float()`   • `negative_float`   • `nonnegative_float`
   
 
 * ### `int(options \\ [])`
@@ -382,7 +382,7 @@ tests. These generators are documented [in HexDocs](https://hexdocs.pm/pollution
   
   ### See also
   
-  • `positive_int()`   • `negative_int`   • `non_negative_int`
+  • `positive_int()`   • `negative_int`   • `nonnegative_int`
   
 
 * ### `list()`

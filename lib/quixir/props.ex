@@ -58,15 +58,18 @@ defmodule Quixir.Props do
               rescue e in [ExUnit.AssertionError] ->
                 false
               end
-          end
-          try do
-            Shrinker.shrink({shrinker, q_state, q_locals})
-          rescue qe in [Quixir.PropertyError] ->
-            raise(ExUnit.AssertionError, [
-                  message: "#{e.message}\n#{qe.message}",
-                  expr:    e.expr
-                ])
-          end
+            end
+
+            try do
+              Shrinker.shrink({shrinker, q_state, q_locals})
+            rescue qe in [Quixir.PropertyError] ->
+              raise(ExUnit.AssertionError, [
+                    message: "#{e.message}\n#{qe.message}",
+                    expr:    e.expr,
+                    left:    e.left,
+                    right:   e.right,
+                  ])
+            end
         end
 
         q_state

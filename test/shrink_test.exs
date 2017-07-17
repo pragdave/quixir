@@ -38,5 +38,20 @@ defmodule ShrinkTest do
     end
   end
 
-  
+  test "issue #12: constraints not honored when shrinking choose" do
+    # Shrinking should stop at 1
+    assert_raise ExUnit.AssertionError, ~r/a = 1/, fn ->
+      ptest(a:  positive_int()) do
+        assert a < 0
+      end
+    end
+    
+    # Shrinking should stop at 1 if the only choice is a positive int
+    assert_raise ExUnit.AssertionError, ~r/b = 1/, fn ->
+      ptest(b: choose( from: [ positive_int() ])) do
+        assert b < 0
+      end
+    end
+  end
+
 end

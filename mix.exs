@@ -1,20 +1,27 @@
 defmodule Quixir.Mixfile do
   use Mix.Project
 
-  @version "0.9.2"
+  @version "0.9.3"
 
   @package [
-    licenses:    ["apache 2.0"],
-    maintainers: ["Dave Thomas (pragdave) <dave@pragdave.me>"],
+    licenses:    [ "apache 2.0" ],
+    maintainers: [ "Dave Thomas (pragdave) <dave@pragdave.me>" ],
     links:       %{
       "Github" => "https://github.com/pragdave/quixir",
     },
   ]
 
-  @deps [
-    { :pollution, "~> 0.9.1" },
-    { :ex_doc,    ">= 0.0.0", only: [:dev, :test] },
-  ]
+  if System.get_env("THIS_IS_THE_REAL_ME") == "dave" do
+    @deps [
+      { :pollution, [ path: "../pollution" ] },
+      { :ex_doc,    ">= 0.0.0", only:   [ :dev, :test ] },
+    ]
+  else
+    @deps [
+      { :pollution, "~> 0.9.2" },
+      { :ex_doc,    ">= 0.0.0", only:   [ :dev, :test ] },
+    ]
+  end
 
   @docs [
     extras: [ "README.md" ],
@@ -31,7 +38,7 @@ defmodule Quixir.Mixfile do
   @project [
     app:             :quixir,
     version:         @version,
-    elixir:          "~> 1.3",
+    elixir:          ">= 1.3.0",
     elixirc_paths:   @elixirc_paths,
     build_embedded:  @if_production,
     start_permanent: @if_production,

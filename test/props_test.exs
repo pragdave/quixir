@@ -15,7 +15,7 @@ defmodule PropsTest do
   end
 
   test "one type, no args" do
-    ptest [a: int] do
+    ptest [a: int()] do
       assert is_integer(a)
     end
   end
@@ -27,7 +27,7 @@ defmodule PropsTest do
   end
   
   test "two plain types" do
-    ptest a: int, b: list do
+    ptest a: int(), b: list() do
       assert is_integer(a)
       assert is_list(b)
     end
@@ -41,7 +41,7 @@ defmodule PropsTest do
   end
   
   test "two types, second depends on first" do
-    ptest a: int, b: int(min: ^a+1, max: ^a+10) do
+    ptest a: int(), b: int(min: ^a+1, max: ^a+10) do
       assert is_integer(a)
       assert is_integer(b)
       assert a < b
@@ -53,7 +53,7 @@ defmodule PropsTest do
     table = :ets.new(__MODULE__, [])
     :ets.insert(table, { :repeat_for, 0 })
   
-    ptest [a: int] do
+    ptest [a: int()] do
       assert is_integer(a)
       :ets.update_counter(table, :repeat_for, 1)
     end
@@ -66,7 +66,7 @@ defmodule PropsTest do
     table = :ets.new(__MODULE__, [])
     :ets.insert(table, { :repeat_for, 0 })
   
-    ptest [a: int], repeat_for: 123 do
+    ptest [a: int()], repeat_for: 123 do
       assert is_integer(a)
       :ets.update_counter(table, :repeat_for, 1)
     end

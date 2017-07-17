@@ -190,7 +190,8 @@ defmodule Quixir.Props do
   end
 
   def set_params(property_list) do
-    property_list |> Enum.map(&set_one_param/1)
+    property_list
+    |> Enum.map(&set_one_param/1)
   end
 
   def set_one_param({name, _generator}) do

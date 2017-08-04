@@ -3,7 +3,7 @@
 [Property-based
 testing](http://blog.jessitron.com/2013/04/property-based-testing-what-is-it.html)
 is a technique for testing your code by considering general properties
-of the functions you write. Rather that using explicit values in your
+of the functions you write. Rather than using explicit values in your
 tests, you instead try to define the types of the values to feed it,
 and the properties of the results produced.
 

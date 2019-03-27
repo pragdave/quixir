@@ -1,7 +1,7 @@
 defmodule Quixir.Mixfile do
   use Mix.Project
 
-  @version "0.9.3"
+  @version "0.9.4"
 
   @package [
     licenses:    [ "apache 2.0" ],
@@ -11,17 +11,17 @@ defmodule Quixir.Mixfile do
     },
   ]
 
-  if System.get_env("THIS_IS_THE_REAL_ME") == "dave" do
-    @deps [
+@deps (if File.dir?("../pollution") do
+    [
       { :pollution, [ path: "../pollution" ] },
       { :ex_doc,    ">= 0.0.0", only:   [ :dev, :test ] },
     ]
   else
-    @deps [
+    [
       { :pollution, "~> 0.9.2" },
       { :ex_doc,    ">= 0.0.0", only:   [ :dev, :test ] },
     ]
-  end
+  end)
 
   @docs [
     extras: [ "README.md" ],
